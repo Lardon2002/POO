@@ -1,10 +1,13 @@
 public class Developpement {
 	char type; //c: "chevalier" ; p="point" ; r="route" ; m="monopole" ; i="invention"
 	//5 cards point, 14 cards chevalier, 2 cards route, 2 cards monopole, 2 cards invention, for a total of 25.
+	
 	public Developpement(char t) {
 		if (t=='c' ||t=='p' ||t=='r' ||t=='m' ||t=='i') type=t;
-		//else catch error?
+		else throw new IllegalArgumentException();
 	}
+	
+	//Object methods override
 	//I don't think we need to override equals and hashCode methods, as two identical cards are still different in regards of the game
 	public String toString() {
 		switch(type) {
@@ -17,7 +20,7 @@ public class Developpement {
 		}
 	}
 	
-	/* Fonction action:
+	/* TODO Fonction action:
 	 * 	if type='...'
 	 * 		faire telle action
 	 * Comment le mettre en place?

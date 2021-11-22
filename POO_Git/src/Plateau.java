@@ -4,11 +4,12 @@ import java.util.Random;
 public class Plateau {
 	final Tuile[][] tuiles;
 	LinkedList<Developpement> cartes= new LinkedList<Developpement>();
-	//Maisons à rajouter dans le plateau ? Si les mainsons sont assignées à des emplacements, puis rattachées à des cases.
-	//Rajouter également les routes ?
+	//Rajouter les maisons ?	
+	//Rajouter les routes ?
 	public Plateau(int lon, int larg, Tuile ...args) {
 		tuiles=new Tuile[lon][larg];
 		for (Tuile t:args) {
+			//TODO?
 			//1er parcours pour déterminer les tailles des tableaux
 			//2e parcours pour les remplir ?
 			//Pour l'instant on part sur un principe de tableau à taille fixe, mentionnée
@@ -35,37 +36,26 @@ public class Plateau {
 				new Tuile(3,0,9,'a'),new Tuile(3,1,8,'r'),new Tuile(3,2,5,'m'),new Tuile(3,3,2,'b')); 
 	}
 	//Getters
-	//Should do a getter Tuile(x,y) ?
-	//Getter of nb of dev cards is useless, but number/isEmpty could be useful (dunno where to use them but better to have them in case of need
-	public boolean isEmptyDev() {return cartes.size()==0;}
-	public int nbDevCards() {return cartes.size();}
+	public Tuile getTuile(int x, int y) {
+		/** return Tuile in plateau's specified position */
+		try {
+			return tuiles[x][y];
+		} catch (NullPointerException e) {
+			System.out.println("Cette tuile n'existe pas..."); return null;
+		}
+	}
+	public boolean isEmptyDev() /** return true if there is no Developpement cards left */ {return cartes.size()==0;}
+	public int nbDevCards() /** return number of Developpement cards */ {return cartes.size();}
 	
 	//Object methods override
 	//equals and hashcode not relevant to change because 2 Plateau with the same Tuiles are still 2 distinct instances of game
 	
-	/* Comment afficher le plateau ?
-
-	  mmm  w  bbb
-	 m 8 m w b 2 b
-	  mmm  w  bbb
-	  	   -
-	 wwww |w| wwww                //petite lettre pour une colonie, grande lettre pour une ville
-	       -					//Sinon on eut aussi s'accorder pour un symbole pour chaque couleur
-	  mmm  w  ddd				//Pour ne pas surcharger visuellement avec des lettres
-	 m 4 m w d 7 d
-	  mmm  w  ddd
-	  
-	  ___________________
-	  
-	|w| m8m w b8b   => On va faire ca car impossible d'imprimer sur plusieurs lignes
-	 w  ww |w| ww  
-	|w| f4f w d7d
-	*/
 	public String toString() {
+		//TODO rajouter l'affichage des maisons
 		String res="";
 		for (int i=0; i<tuiles.length; i++) {
 			for (int j=0; j<tuiles[i].length; j++) {
-				if (tuiles[i][j]==null) res+="     ";
+				if (tuiles[i][j]==null) res+="      ";
 				else res+=tuiles[i][j].toString();
 			}
 			res+="\n";
@@ -73,24 +63,41 @@ public class Plateau {
 		return res;
 	}
 	
+	//Relative to Plateau player turn methods
 	public Developpement piocher(Joueur j) {
-		//Comment la lier au joueur ? Laquelle on appelle en premier?
+		/**Gives a random Developpement card to player j
+		 * Entry: Joueur j who wants the card
+		 * return: Developpement card		 * 
+		 */
 		double nb=Math.random()*cartes.size();
 		int index=(int) nb;
 		if (cartes.size()==0) return null;
 		return cartes.remove(index);
 	}
-	
-	public int lancerDe() {
-		Random r=new Random();
-		int d1=r.nextInt(6)+1; //Number between 1 and 6 (0 and 5, +1)
-		int d2=r.nextInt(6)+1;
-		return d1+d2; //Necessary to generate 2 number for 2 dice, because of number probabilities
+
+	public void donnerRessourcesJoueur() {
+		//TODO with Noemie's method
 	}
 	
 	public void donnerRessources(int de) {
-		//Donner les ressources selon le résultat du dé
-		//Parcourir les cases du plateau, si la case vaut 1 on donne les ressources correspondantes à toutes les maisons qui sont dessus?
+		if (de==7) return; //Case of Voleur, this does not applyff
+		for (int i=0; i<tuiles.length; i++) {
+			for (int j=0; j<tuiles[i].length; j++) {
+				Tuile t=tuiles [i][j];
+				if (t.valeurDe==de) {
+					Ressource ress=new Ressource(t.getRessource());
+					//We check the 4 possible spots for maison on this tuile
+					//PB sur optimisation long terme : comment gérer un nombre potentiellement infini de positions pour maisons ?
+					//Créer un type enum qui sera composé de toutes les maisons sur cette case ?
+					//Vérifier comment fonctionne enum
+					try {
+						donnerRessourcesJoueur(); //TODO!
+					} catch (NullPointerException e) {
+						System.out.println("Une erreur est survenue, les ressources n'ont pas été distribuées à tous :(");
+					}
+				}
+			}
+		}
 	}
 }	
 
