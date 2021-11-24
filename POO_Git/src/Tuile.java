@@ -6,10 +6,27 @@ public class Tuile {
 	
 	final int valeurDe; // Die value on this case
 	final char type;
+	
+	//essai pour les routes 
+	//on met des cellules pour pouvoir pointer sur la même route entre tuiles
+	Cellule[] routes=new Cellule[4];//car 4 côtés dans un carré
+	/*	 
+	 *  1_
+	 * 0|_|2
+	     3
+	 */
+	Cellule[] maisons=new Cellule[4]; //pareil que pour route
+	/*
+	 * 
+	 */
 	public Tuile(int x, int y, int valeur, char type) {
 		this.x=x; this.y=y;
 		valeurDe=valeur;
 		this.type=type;
+		for(int i=0; i<4; i++) {
+			this.routes[i]=new Cellule();
+			this.maisons[i]=new Cellule();
+		}
 	}
 	
 	//Getters
@@ -33,6 +50,16 @@ public class Tuile {
 	}
 	
 	public String toString() {
-		return " "+type+String.format("%0" + 2 + "d", valeurDe)+type+" ";
+		String str="";
+		
+		str+=Printed.toString(maisons[1],routes[1],routes[1],routes[1],routes[1],maisons[2]);
+		str+="\n";
+		str+=Printed.toString(routes[0]);
+		str+=type+String.format("%0" + 2 + "d", valeurDe)+type;
+		str+=Printed.toString(routes[2]);
+		str+="\n";
+		str+=Printed.toString(maisons[0],routes[3],routes[3],routes[3],routes[3],maisons[3]);
+		
+		return str;
 	}
 }
