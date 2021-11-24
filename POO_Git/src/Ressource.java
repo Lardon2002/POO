@@ -7,9 +7,11 @@ public class Ressource {
 	public Ressource(int b, int a, int m, int f, int r) {
 		bois=b; argile=a; mouton=m; ble=f; roche=r;
 	}
+	//ressource vide
 	public Ressource() {
 		this(0,0,0,0,0);
 	}
+	//création d'une seule ressource
 	public Ressource (char c) {
 		switch(c) {
 			case 'b': bois=1; break;
@@ -28,6 +30,15 @@ public class Ressource {
 	public int getRoche() {return roche;}
 	public int nbRessources() {return bois+argile+mouton+ble+roche;}
 
+	//Sum of 2 resource objects. Modifies this object
+	public void somme(Ressource r) {
+		bois+=r.bois;
+		argile+=r.argile;
+		mouton+=r.mouton;
+		ble+=r.ble;
+		roche+=r.roche;
+	}
+	
 	//Object method overrides
 	@Override
 	public boolean equals(Object o) {
@@ -40,15 +51,6 @@ public class Ressource {
 	public String toString() {
 		return bois+ " bois, "+ argile + " argile, "+ ble + " blé, " +
 				mouton+" mouton, "+ roche + " roche.";
-	}
-	
-	//Sum of 2 resource objects. Modifies "this" object while leaves r intact
-	public void somme(Ressource r) {
-		bois+=r.bois;
-		argile+=r.argile;
-		mouton+=r.mouton;
-		ble+=r.ble;
-		roche+=r.roche;
 	}
 	
 	//Pay to build methods
@@ -71,19 +73,27 @@ public class Ressource {
 	}
 	public boolean payerDev() {
 		//Du coté du joueur, il faudra évidemment lui donner sa carte
-		if (mouton<1 && ble<1 && roche<1) return false;
+		if (mouton<1 && ble<1 && roche<3) return false;
 		mouton--; ble--; roche--; return true;
 	}
 	
 	//Discard when Voleur methods
-	public boolean discard(char type, int nb) {
+	public void discard(char type, int nb) {
 		switch (type) {
-		case 'b': if (bois-nb<0) return false; else {bois-=nb; return true;}
-		case 'a': if (argile-nb<0) return false; else {argile-=nb; return true;}
-		case 'm': if (mouton-nb<0) return false; else {mouton-=nb; return true;}
-		case 'f': if (ble-nb<0) return false; else {ble-=nb; return true;}
-		case 'r': if (roche-nb<0) return false; else {roche-=nb; return true;}
-		default: return false;
+		case 'b': bois-=nb; break;
+		//ETC TODO
 		}
+	}
+	public void discardArgile(int nb) {
+		argile-=nb;
+	}
+	public void discardMouton(int nb) {
+		mouton-=nb;
+	}
+	public void discardBle(int nb) {
+		ble-=nb;
+	}
+	public void discardRoche(int nb) {
+		roche-=nb;
 	}
 }
