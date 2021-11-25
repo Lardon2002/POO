@@ -1,10 +1,13 @@
 public class Developpement {
 	char type; //c: "chevalier" ; p="point" ; r="route" ; m="monopole" ; i="invention"
 	//5 cards point, 14 cards chevalier, 2 cards route, 2 cards monopole, 2 cards invention, for a total of 25.
+	
 	public Developpement(char t) {
 		if (t=='c' ||t=='p' ||t=='r' ||t=='m' ||t=='i') type=t;
-		//else catch error?
+		else throw new IllegalArgumentException();
 	}
+	
+	//Object methods override
 	//I don't think we need to override equals and hashCode methods, as two identical cards are still different in regards of the game
 	public String toString() {
 		switch(type) {
@@ -17,7 +20,21 @@ public class Developpement {
 		}
 	}
 	
-	/* Fonction action:
+	public void action(Joueur j) {
+		/** Action to do when card is put down.
+		 * Entry: the player playing the card ; return: none
+		 */
+		switch(type) {
+		case 'c': break; //Bouger le voleur. Attention, Joueur.volRessources n'est pas appelé ici !
+		case 'p': break; //Gagner un point de victoire. Penser à prendre en compte les points de ces cartes, même non posées, pour la victoire.
+		case 'r': break; //Placer gratuitement (2?) routes - utiliser la méthode PlacerRouteGratuite du début
+		case 'm': break; //Choisir un type de ressources. Tous les joueurs les défaussent, le joueur en question les récup toutes
+		case 'i': break; //Choisir 2 ressources à piocher (dans quelle classe ?). Automatiser pour IA.
+		default: return;
+		}
+	}
+	
+	/* TODO Fonction action de Developpement:
 	 * 	if type='...'
 	 * 		faire telle action
 	 * Comment le mettre en place?
@@ -32,3 +49,4 @@ public class Developpement {
 	 * Une méthode route appellerait une fonction construireRoute (modifiée pour ne pas payer) dans Joueur...?
 	 */
 }
+

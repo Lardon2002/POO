@@ -73,27 +73,24 @@ public class Ressource {
 	}
 	public boolean payerDev() {
 		//Du coté du joueur, il faudra évidemment lui donner sa carte
-		if (mouton<1 && ble<1 && roche<3) return false;
+		if (mouton<1 && ble<1 && roche<1) return false;
 		mouton--; ble--; roche--; return true;
 	}
 	
 	//Discard when Voleur methods
-	public void discard(char type, int nb) {
+	public boolean discard(char type, int nb) {
+		/**Method to discard one or several instances of one type of resource
+		 * entry: type and number of resources to discard
+		 * return : true if player can discard that many resources; false otherwise
+		 * This method is called when Voleur steals resourses, among others.		 * 
+		 */
 		switch (type) {
-		case 'b': bois-=nb; break;
-		//ETC TODO
+		case 'b': if (bois-nb<0) return false; else {bois-=nb; return true;}
+		case 'a': if (argile-nb<0) return false; else {argile-=nb; return true;}
+		case 'm': if (mouton-nb<0) return false; else {mouton-=nb; return true;}
+		case 'f': if (ble-nb<0) return false; else {ble-=nb; return true;}
+		case 'r': if (roche-nb<0) return false; else {roche-=nb; return true;}
+		default: return false;
 		}
-	}
-	public void discardArgile(int nb) {
-		argile-=nb;
-	}
-	public void discardMouton(int nb) {
-		mouton-=nb;
-	}
-	public void discardBle(int nb) {
-		ble-=nb;
-	}
-	public void discardRoche(int nb) {
-		roche-=nb;
 	}
 }

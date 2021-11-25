@@ -10,8 +10,12 @@ public class Plateau {
 	//Rajouter également les routes ?
 	
 	public Plateau(int lon, int larg, Tuile ...args) {
+		//Pour l'affichage de l'interface graphique, on fera probablement un GridLayout(lon,larg), 
+		//d'où l'intérêt d'avoir un tableau bien formé.
+		//Les cases vides afficheront juste du blanc ou jsp
 		tuiles=new Tuile[lon][larg];
 		for (Tuile t:args) {
+			//TODO? - PLATEAU-MAKING (not now)
 			//1er parcours pour déterminer les tailles des tableaux
 			//2e parcours pour les remplir ?
 			//Pour l'instant on part sur un principe de tableau à taille fixe, mentionnée
@@ -42,6 +46,17 @@ public class Plateau {
 				new Tuile(2,0,3,'r'),new Tuile(2,1,7,'d'),new Tuile(2,2,10,'f'),new Tuile(2,3,6,'a'),
 				new Tuile(3,0,9,'a'),new Tuile(3,1,8,'r'),new Tuile(3,2,5,'m'),new Tuile(3,3,2,'b')); 
 	}
+	//Getters
+	public Tuile getTuile(int x, int y) {
+		/** return Tuile in plateau's specified position */
+		try {
+			return tuiles[x][y];
+		} catch (NullPointerException e) {
+			System.out.println("Cette tuile n'existe pas..."); return null;
+		}
+	}
+	public boolean isEmptyDev() /** return true if there is no Developpement cards left */ {return cartes.size()==0;}
+	public int nbDevCards() /** return number of Developpement cards */ {return cartes.size();}
 	
 	//fonction pour initialiser les routes reliées entre elles, utilisée dans le constructeur 
 	private void routesMaisonsInit(){
@@ -132,12 +147,7 @@ public class Plateau {
 		}*/
 		
 	}
-	//Getters
-	//Should do a getter Tuile(x,y) ?
-	//Getter of nb of dev cards is useless, but number/isEmpty could be useful (dunno where to use them but better to have them in case of need
-	public boolean isEmptyDev() {return cartes.size()==0;}
-	public int nbDevCards() {return cartes.size();}
-	
+
 	//Object methods override
 	//equals and hashcode not relevant to change because 2 Plateau with the same Tuiles are still 2 distinct instances of game
 	
@@ -227,13 +237,23 @@ public class Plateau {
 		
 	}
 	
+	//Relative to Plateau player turn methods
 	public Developpement piocher(Joueur j) {
-		//Comment la lier au joueur ? Laquelle on appelle en premier?
-		double nb=Math.random()*cartes.size();
+		/**Gives a random Developpement card to player j
+		 * Entry: Joueur j who wants the card
+		 * return: Developpement card		 * 
+		 */		double nb=Math.random()*cartes.size();
 		int index=(int) nb;
 		if (cartes.size()==0) return null;
 		return cartes.remove(index);
 	}
+	
+	public void donnerRessourcesJoueur() {
+		/** TODO with Noemie's method
+		 * Called after dice
+		 */
+	}
+	
 	
 	public int lancerDe() {
 		Random r=new Random();
@@ -243,8 +263,28 @@ public class Plateau {
 	}
 	
 	public void donnerRessources(int de) {
-		//Donner les ressources selon le résultat du dé
-		//Parcourir les cases du plateau, si la case vaut 1 on donne les ressources correspondantes à toutes les maisons qui sont dessus?
+		/**Method to give player their resources, after dice roll, if they have a house on a Tuile with matching number.
+		 * Entry: dice roll value ; return: none		 * 
+		 */
+		
+		if (de==7) return; //Case of Voleur, this does not applyff
+		for (int i=0; i<tuiles.length; i++) {
+			for (int j=0; j<tuiles[i].length; j++) {
+				Tuile t=tuiles [i][j];
+				if (t.valeurDe==de) {
+					Ressource ress=new Ressource(t.getRessource());
+					//We check the 4 possible spots for maison on this tuile
+					//PB sur optimisation long terme : comment gérer un nombre potentiellement infini de positions pour maisons ?
+					//Créer un type enum qui sera composé de toutes les maisons sur cette case ?
+					//Vérifier comment fonctionne enum
+					try {
+						donnerRessourcesJoueur(); //TODO! - DonnerRessourcesJoueur - en attente Noémie
+					} catch (NullPointerException e) {
+						System.out.println("Une erreur est survenue, les ressources n'ont pas été distribuées à tous :(");
+					}
+				}
+			}
+		}
 	}
 	
 	
